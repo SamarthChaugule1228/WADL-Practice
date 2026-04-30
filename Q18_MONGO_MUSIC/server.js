@@ -1,9 +1,16 @@
 const express = require("express")
 const mongoose = require("mongoose")
+const ejs = require("ejs")
+const path = require("path")
 // Songname, Film, Music_director, singer
 app = express();
 
 app.use(express.json());
+// Middleware
+app.use(express.urlencoded({ extended:true }));
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'public'));
+app.use(express.static(path.join(__dirname, 'public')));
 // app.use((req, res, next) => {
 //     res.setHeader("Access-Control-Allow-Origin", "*"); // allow all origins
 //     res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
@@ -39,6 +46,11 @@ app.get("/insert", async  (req, res) => {
     ]);
     res.send("5 music Added in the Database ");
 });
+app.get("/", async (req, res) => {
+    const songs = await Song.find();
+    res.render('index', { songs: songs }); 
+});
+
 //server
 
 // D) Display total count of documents and List all the documents in browser.
@@ -60,9 +72,10 @@ app.get("/filter",async (req, res) => {
 });
 // g) Delete the song which you don’t like.
 
-app.get("/delete/:name", async (req, res) => {
-    await Song.deleteOne({ songName: req.params.name });
-    res.send("Song Deleted ");
+app.post("/delete", async (req, res) => {
+    await Song.deleteOne({ songName: req.body.songname });
+    const songs = await Song.find();
+    res.render('index', { songs: songs });
 });
 
 // h) Add new song which is your favourite.
