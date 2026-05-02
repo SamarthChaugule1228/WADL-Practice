@@ -43,25 +43,25 @@ const data = [
     { Name: "JKL", Roll_No: 117, WAD_Marks: 35, CC_Marks: 33, DSBDA_Marks: 36, CNS_Marks: 34, AI_Marks: 32 }
 ];
 
-// 👉 Insert data (run once)
+//  Insert data (run once)
 app.get("/api/insert", async (req, res) => {
     const result = await Student.insertMany(data);
     res.json(result);
 });
 
-// 👉 Display all (d, j)
+//  Display all (d, j)
 app.get("/api/display", async (req, res) => {
     const students = await Student.find();
     res.json(students);
 });
 
-// 👉 DSBDA > 20 (e)
+//  DSBDA > 20 (e)
 app.get("/api/dsbda20", async (req, res) => {
     const result = await Student.find({ DSBDA_Marks: { $gt: 20 } });
     res.json(result);
 });
 
-// 👉 All subjects > 25 (g)
+//  All subjects > 25 (g)
 app.get("/api/all25", async (req, res) => {
     const result = await Student.find({
         WAD_Marks: { $gt: 25 },
@@ -73,7 +73,7 @@ app.get("/api/all25", async (req, res) => {
     res.json(result);
 });
 
-// 👉 Less than 40 in WAD & CC (h)
+// Less than 40 in WAD & CC (h)
 app.get("/api/wadcc", async (req, res) => {
     const result = await Student.find({
         WAD_Marks: { $lt: 40 },
@@ -82,7 +82,7 @@ app.get("/api/wadcc", async (req, res) => {
     res.json(result);
 });
 
-// 👉 Update +10 marks (f)
+//  Update +10 marks (f)
 app.put("/api/update/:name", async (req, res) => {
     const name = req.params.name;
 
@@ -102,7 +102,7 @@ app.put("/api/update/:name", async (req, res) => {
     res.json({ message: "Marks updated by +10" });
 });
 
-// 👉 Delete (i)
+// Delete (i)
 app.delete("/api/delete/:name", async (req, res) => {
     const name = req.params.name;
 
