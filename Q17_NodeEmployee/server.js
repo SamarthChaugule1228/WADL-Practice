@@ -1,13 +1,14 @@
 const express = require("express")
 const fs = require("fs")
-
+const cors = require('cors')
 const app = express()
 
 app.use(express.static('public'));
-app.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    next();
-});
+app.use(cors());
+// app.use((req, res, next) => {
+//     res.setHeader("Access-Control-Allow-Origin", "*");
+//     next();
+// });
 
 //api 
 app.get("/api/employee", (req, res) => {
