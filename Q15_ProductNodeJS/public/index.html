@@ -38,13 +38,30 @@
 <div id="productList">Loading...</div>
 
 <script>
+
     async function fetchData() {
         try {
             const container = document.getElementById("productList");
 
-            const response = await fetch("http://localhost:3000/api/products");
-            const data = await response.json();           
+        //     const response = await fetch("http://localhost:3000/api/products");
+        //     const data = await response.json();           
 
+        //   container.innerHTML = data.map(p=>(
+        //     `
+        //     <div class="card">
+        //         <img src="${p.image}" alt="${p.name}">
+        //         <h1>${p.name}
+        //         <h2>${p.price}</h2>
+        //         </h1>
+        //         </div>
+        //     `
+        //   )
+        //   ).join('')
+        // ;
+        await fetch('http://localhost:3000/api/products')
+        .then( res => res.json())
+        .then((data)=>{
+            
           container.innerHTML = data.map(p=>(
             `
             <div class="card">
@@ -56,6 +73,7 @@
             `
           )
           ).join('');
+        });
 
         } catch (err) {
             document.getElementById("productList").innerText = "Error loading data";
