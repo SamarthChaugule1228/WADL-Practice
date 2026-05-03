@@ -1,20 +1,26 @@
-import { Injectable } from '@angular/core';
+
+import { Injectable } from "@angular/core"
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
 
+export class AuthService
+{
   register(user: any) {
-    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('user', JSON.stringify(user) || '{}');
   }
-
-  login(username: string, password: string): boolean {
+  
+  login(username: String, password: String): boolean{
+    
     const data = JSON.parse(localStorage.getItem('user') || '{}');
-    return data.username === username && data.password === password;
-  }
 
+    return data.username == username && data.password == password;
+
+  }
   getUser() {
     return JSON.parse(localStorage.getItem('user') || '{}');
   }
-}
+}  
+
+

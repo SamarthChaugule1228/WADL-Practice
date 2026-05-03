@@ -1,14 +1,16 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { AuthService } from '../auth';
-import { Router } from '@angular/router';
+import { Component } from "@angular/core";
+import { Router } from "@angular/router"
+import { AuthService } from "../auth";  
+import { FormsModule } from "@angular/forms";
 
 @Component({
-  selector: 'app-register',
+  selector: "app-register",
   standalone: true,
   imports: [FormsModule],
   templateUrl: './register.html'
+  
 })
+
 export class RegisterComponent {
 
   user = {
@@ -18,11 +20,13 @@ export class RegisterComponent {
     password: ''
   };
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private auth: AuthService, private router: Router) { }
 
-  registerUser() {
+  registerUser()
+  {
     this.auth.register(this.user);
-    alert("Registered Successfully");
+    alert("Registered Successfully !!!");
     this.router.navigate(['/']);
   }
+
 }
