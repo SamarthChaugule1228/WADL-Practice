@@ -1,26 +1,24 @@
-const express = require("express")
-const path = require("path")
-const fs = require("fs")
+const express = require('express')
+const fs = require('fs')
+const cors = require('cors');
+// const { error } = require('console');
 
-app = express()
+const app = express()
 
-app.use(express.static('public'))
+app.use(express.static('public'));
 
-app.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin" ,"*");
-    next();
-});
+app.use(cors());
 
 app.get("/api/user", (req, res) => {
-    
-    fs.readFile("user.json", 'utf-8', (err, data) => {
+    fs.readFile('user.json', 'utf-8', (err, data) => {
         if (err) {
-            return res.status(500).json({ error: "Error should be therr" });
+            return res.status(500).json({ error: "error are there " });
+
         }
         res.json(JSON.parse(data));
     });
 });
 
 app.listen(3000, () => {
-    console.log("app is listening : ");
+    console.log("Server is Listening !!!!");
 });
