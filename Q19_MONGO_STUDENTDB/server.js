@@ -81,8 +81,6 @@ app.get("/update/:name", async (req, res) => {
 
     res.send(result);
 });
-
-
 // g) Students with >25 in ALL subjects
 app.get("/all25", async (req, res) => {
     const result = await Student.find({
@@ -113,8 +111,6 @@ app.get("/delete/:name", async (req, res) => {
     const result = await Student.deleteOne({ Name: req.params.name });
     res.send(result);
 });
-
-
 // Server Start
 app.listen(3000, () => {
     console.log("Server running at http://localhost:3000");

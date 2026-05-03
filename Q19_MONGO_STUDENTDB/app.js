@@ -1,17 +1,19 @@
 import express from "express";
 import mongoose from "mongoose";
-
+import cors from "cors";
 const app = express();
 
 app.use(express.static("public"));
 app.use(express.json());
 
 // CORS (for fetch from 5500)
-app.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "*");
-    next();
-});
+// app.use((req, res, next) => {
+//     res.setHeader("Access-Control-Allow-Origin", "*");
+//     res.setHeader("Access-Control-Allow-Methods", "*");
+//     next();
+// });
+
+app.use(cors());
 
 // MongoDB Connection (UNCHANGED)
 mongoose.connect("mongodb://127.0.0.1:27017/studentData")
@@ -98,7 +100,6 @@ app.put("/api/update/:name", async (req, res) => {
             }
         }
     );
-
     res.json({ message: "Marks updated by +10" });
 });
 
@@ -110,6 +111,5 @@ app.delete("/api/delete/:name", async (req, res) => {
 
     res.json({ message: "Student deleted successfully" });
 });
-
 // Start server
 app.listen(3000, () => console.log("Server running on http://localhost:3000"));
