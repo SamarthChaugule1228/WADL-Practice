@@ -11,12 +11,6 @@ app.use(express.urlencoded({ extended:true }));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'public'));
 app.use(express.static(path.join(__dirname, 'public')));
-// app.use((req, res, next) => {
-//     res.setHeader("Access-Control-Allow-Origin", "*"); // allow all origins
-//     res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-//     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-//     next();
-// });
 const cors = require("cors");
 app.use(cors());
 // b) Create a collection called song details 
