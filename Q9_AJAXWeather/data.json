@@ -5,4 +5,3 @@
     "Bangalore": { "temp": 25, "humidity": 80, "desc": "Rainy" },
     "Chennai": { "temp": 30, "humidity": 65, "desc": "Humid" }
 }
-  
