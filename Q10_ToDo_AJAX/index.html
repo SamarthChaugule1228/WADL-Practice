@@ -1,78 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>TODO App</title>
+    <title>Simple To-Do</title>
 </head>
 <body>
 
-<h1>Welcome to the Todo App</h1>
+<h2>To-Do List</h2>
 
-<input type="text" placeholder="Enter the Task" id="taskinput">
-<button onclick="addTask()">Add Task</button>
+<input id="task" placeholder="Enter task">
+<button onclick="addTask()">Add</button>
 
 <ul id="list"></ul>
 
 <script>
-const API_GET = "http://localhost:3000/alltask";
-const API_ADD = "http://localhost:3000/add";
+let tasks = JSON.parse(localStorage.getItem("todos")) || [];
 
+// just to show XMLHttpRequest usage
+function ajax() {
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", "data.json", true);
+    xhr.send();
+}
 
-function loadTask() {
-    const container = document.getElementById("list");
-
-    fetch(API_GET)
-    .then(res => res.json())
-    .then(data => {
-        container.innerHTML = data.map(p => `
+// display
+function show() {
+    document.getElementById("list").innerHTML =
+        tasks.map((t, i) => `
             <li>
-                ${p.des}
-                <button onclick="editTask(${p.id})">Edit</button>
-                <button onclick="deleteTask(${p.id})">Delete</button>
+                ${t}
+                <button onclick="del(${i})">X</button>
+                <button onclick="edit(${i})">Edit</button>
             </li>
-        `).join('');
-    });
+        `).join("");
 }
 
+// add
 function addTask() {
-    const task = document.getElementById("taskinput").value;
+    let val = document.getElementById("task").value;
+    if (val === "") return alert("Enter task");
 
-    fetch(API_ADD, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ text: task })
-    })
-    .then(() => {
-        loadTask();
-        document.getElementById("taskinput" ).value = "";
-    });
+    ajax(); // AJAX call
+
+    tasks.push(val);
+    localStorage.setItem("todos", JSON.stringify(tasks));
+    show();
 }
 
-function deleteTask(id) {
-    fetch(`http://localhost:3000/delete/${id}`, {
-        method: "DELETE"
-    })
-    .then(() => loadTask());
+// delete
+function del(i) {
+    ajax();
+
+    tasks.splice(i, 1);
+    localStorage.setItem("todos", JSON.stringify(tasks));
+    show();
 }
 
-function editTask(id) {
-    const newTask = prompt("Enter new task:");
-    if (!newTask) return;
+// update
+function edit(i) {
+    let newVal = prompt("Edit task:", tasks[i]);
+    if (!newVal) return;
 
-    fetch(`http://localhost:3000/update/${id}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ text: newTask })
-    })
-    .then(() => loadTask());
+    ajax();
+
+    tasks[i] = newVal;
+    localStorage.setItem("todos", JSON.stringify(tasks));
+    show();
 }
 
-// Auto load when page opens
-window.onload = loadTask;
+// initial load
+show();
 </script>
 
 </body>

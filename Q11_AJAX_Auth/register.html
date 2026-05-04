@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+</head>
+<body>
+
+<h2>Registration Form</h2>
+
+<input id="name" placeholder="Name"><br>
+<input id="email" placeholder="Email"><br>
+<input id="mobile" placeholder="Mobile"><br>
+<input id="dob" type="date"><br>
+<input id="city" placeholder="City"><br>
+<input id="address" placeholder="Address"><br>
+<input id="username" placeholder="Username"><br>
+<input id="password" type="password" placeholder="Password"><br>
+
+<button onclick="register()">Register</button>
+
+<p id="msg"></p>
+
+<script>
+function register() {
+    let name = document.getElementById("name").value.trim();
+    let email = document.getElementById("email").value.trim();
+    let mobile = document.getElementById("mobile").value.trim();
+    let dob = document.getElementById("dob").value;
+    let city = document.getElementById("city").value.trim();
+    let address = document.getElementById("address").value.trim();
+    let username = document.getElementById("username").value.trim();
+    let password = document.getElementById("password").value.trim();
+
+    // ✅ Validations
+    if (!name || !email || !mobile || !dob || !city || !address || !username || !password) {
+        return alert("All fields required!");
+    }
+
+    if (!email.includes("@")) return alert("Invalid email");
+    if (mobile.length != 10) return alert("Mobile must be 10 digits");
+    if (password.length < 4) return alert("Password too short");
+
+    let user = { name, email, mobile, dob, city, address, username, password };
+
+    // ✅ AJAX POST simulation
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "save", true);
+
+    xhr.onload = function () {
+        // store in localStorage
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+        users.push(user);
+        localStorage.setItem("users", JSON.stringify(users));
+
+        document.getElementById("msg").innerText = "Registered Successfully!";
+    };
+
+    xhr.send(JSON.stringify(user));
+}
+</script>
+
+</body>
+</html>

@@ -1,31 +1,27 @@
 import { Component } from "@angular/core";
-import { Router } from "@angular/router"
-import { AuthService } from "../auth";  
+import { Route, Router } from "@angular/router"
 import { FormsModule } from "@angular/forms";
+import { AuthService } from "../auth";
 
 @Component({
   selector: "app-register",
   standalone: true,
   imports: [FormsModule],
-  templateUrl: './register.html'
-  
+  templateUrl : './register.html'
 })
 
-export class RegisterComponent {
-
+export class RegisterComponent{
   user = {
     name: '',
     email: '',
     username: '',
     password: ''
   };
-
   constructor(private auth: AuthService, private router: Router) { }
-
-  registerUser()
-  {
+  
+  registerUser() {
     this.auth.register(this.user);
-    alert("Registered Successfully !!!");
+    alert("Register Successfully ");
     this.router.navigate(['/']);
   }
 

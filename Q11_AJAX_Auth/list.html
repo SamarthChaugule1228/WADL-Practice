@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User List</title>
+</head>
+<body>
+
+<h2>Registered Users</h2>
+
+<table border="1">
+<tr>
+    <th>Name</th><th>Email</th><th>Mobile</th>
+    <th>DOB</th><th>City</th><th>Address</th><th>Username</th>
+</tr>
+<tbody id="tableBody"></tbody>
+</table>
+
+<script>
+let users = JSON.parse(localStorage.getItem("users")) || [];
+
+// ✅ Use map to create rows
+let rows = users.map(u => `
+    <tr>
+        <td>${u.name}</td>
+        <td>${u.email}</td>
+        <td>${u.mobile}</td>
+        <td>${u.dob}</td>
+        <td>${u.city}</td>
+        <td>${u.address}</td>
+        <td>${u.username}</td>
+    </tr>
+`).join("");   // join converts array → string
+
+document.getElementById("tableBody").innerHTML = rows;
+</script>
+
+</body>
+</html>

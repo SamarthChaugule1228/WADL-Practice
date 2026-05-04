@@ -1,13 +1,9 @@
-<h2>Register</h2>
+<h2>Register </h2>
 <br>
-
-<input [(ngModel)]="user.name" type="text" placeholder="Name">
-<input [(ngModel)]="user.username" type="text" placeholder="Username">
-<input [(ngModel)]="user.email" type="email" placeholder="Email">
-<input [(ngModel)]="user.password" type="password" placeholder="Password">
-
+<br>
+<input type="text" [(ngModel)]="user.name" placeholder="Name">
+<input type="text" [(ngModel)]="user.email" placeholder="Email">
+<input type="text" [(ngModel)]="user.username" placeholder="Username">
+<input type="text" [(ngModel)]="user.password" placeholder="Password">
 <button (click)="registerUser()">Register</button>
-
-<br><br>
-
-<a routerLink="/">Go to Login</a>
+<a routerLink="/">Goto Login </a>
