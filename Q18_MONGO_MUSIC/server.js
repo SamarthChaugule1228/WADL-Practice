@@ -1,95 +1,159 @@
-const express = require("express")
-const mongoose = require("mongoose")
-const ejs = require("ejs")
-const path = require("path")
-// Songname, Film, Music_director, singer
-app = express();
+const express = require("express");
+const mongoose = require("mongoose");
 
-app.use(express.json());
+const app = express();
+
 // Middleware
-app.use(express.urlencoded({ extended:true }));
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'public'));
-app.use(express.static(path.join(__dirname, 'public')));
-const cors = require("cors");
-app.use(cors());
-// b) Create a collection called song details 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Schema
 const songSchema = new mongoose.Schema({
     songName: String,
     filmName: String,
-    Director: String,
+    musicDirector: String,
     singer: String,
     actor: String,
-    actress : String 
+    actress: String
 });
+
 const Song = mongoose.model("Song", songSchema);
 
-// a) Create a Database called music.
-// connect t to mongodb 
-mongoose.connect("mongodb://127.0.0.1:27017/Music11")
-    .then(() => console.log("mongodb connnected"))
-    .catch((err) => console.log("Mongo Db is Not Connected !!!!"));
-// c) Insert array of 5 song documents in above Collection. 
-app.get("/insert", async  (req, res) => {
-    await Song.insertMany([
-        { songName: "Tuje Hasil karunga", filmName: "Hacker2", Director: "Aditya Daru", singer: "Arjit Singh" },
-        { songName: "Tum Hi Ho", filmName: "Aashiqui 2", Director: "Mithoon", singer: "Arijit Singh" },
-        { songName: "Malang", filmName: "Dhoom 3", Director: "Pritam", singer: "Siddharth Mahadevan" },
-        { songName: "Kal Ho Na Ho", filmName: "KHNH", Director: "Shankar", singer: "Sonu Nigam" },
-        { songName: "Channa Mereya", filmName: "ADHM", Director: "Pritam", singer: "Arijit Singh" }
+// a) Create DB + connect
+mongoose.connect("mongodb://127.0.0.1:27017/music")
+    .then(() => console.log("MongoDB Connected"))
+    .catch(() => console.log("MongoDB Error"));
+
+
+// c) Insert 5 songs
+app.get("/insert", async (req, res) => {
+    const data = await Song.insertMany([
+        { songName: "Tum Hi Ho", filmName: "Aashiqui 2", musicDirector: "Mithoon", singer: "Arijit Singh" },
+        { songName: "Malang", filmName: "Dhoom 3", musicDirector: "Pritam", singer: "Siddharth Mahadevan" },
+        { songName: "Kal Ho Na Ho", filmName: "KHNH", musicDirector: "Shankar", singer: "Sonu Nigam" },
+        { songName: "Channa Mereya", filmName: "ADHM", musicDirector: "Pritam", singer: "Arijit Singh" },
+        { songName: "Kesariya", filmName: "Brahmastra", musicDirector: "Pritam", singer: "Arijit Singh" }
     ]);
-    res.send("5 music Added in the Database ");
-});
-app.get("/", async (req, res) => {
-    const songs = await Song.find();
-    res.render('index', { songs: songs }); 
+    res.json({ message: "Inserted", data });
 });
 
-//server
 
-// D) Display total count of documents and List all the documents in browser.
+// d) Total count + list
 app.get("/all", async (req, res) => {
     const songs = await Song.find();
-    res.send({ data: songs, total :songs.length });
+    res.json({ total: songs.length, data: songs });
 });
-// e) List specified Music Director songs.
-app.get("/music/:director", async (req, res) => {
-    const data = await Song.find({ Director: req.params.director });
-    console.log("Director Songs : " + data);
-    res.send(data);
+
+
+// e) Songs by Music Director
+app.get("/director/:name", async (req, res) => {
+    const data = await Song.find({ musicDirector: req.params.name });
+    res.json(data);
 });
-// f) List specified Music Director songs sung by specified Singer 
-app.get("/filter",async (req, res) => {
+
+
+// f) Songs by Director + Singer
+app.get("/filter", async (req, res) => {
     const { director, singer } = req.query;
-    const data = await Song.find({ Director: director, singer: singer });
-    res.send(data);
-});
-// g) Delete the song which you don’t like.
 
-app.post("/delete", async (req, res) => {
-    await Song.deleteOne({ songName: req.body.songname });
-    const songs = await Song.find();
-    res.render('index', { songs: songs });
+    const data = await Song.find({
+        musicDirector: director,
+        singer: singer
+    });
+
+    res.json(data);
 });
 
-// h) Add new song which is your favourite.
-app.post("/add", async(req, res) => {
-    const newsong = new Song(req.body);
-    await newsong.save();
-    res.send("Song Addeed Successfully ");
+
+// g) Delete song
+app.delete("/delete/:name", async (req, res) => {
+    await Song.deleteOne({ songName: req.params.name });
+    res.json({ message: "Deleted Successfully" });
 });
-// i) List Songs sung by Specified Singer from specified film.
+
+
+// h) Add new song
+app.post("/add", async (req, res) => {
+    const song = new Song(req.body);
+    await song.save();
+    res.json({ message: "Song Added", data: song });
+});
+
+
+// i) Songs by Film + Singer
 app.get("/search", async (req, res) => {
     const { film, singer } = req.query;
-    const data = await Song.find({ filmName: film, singer: singer });
-    res.send(data);
-});
-// j) Update the document by adding Actor and Actress name.
-app.get("/update/:name", async(req, res) => {
-    await Song.updateOne({ songName: req.params.name }, { actress: "Shrileala", actor: "Ranvir Singh" });
-    res.send("Updated Successfully ");
-});
-app.listen(3000, () => {
-    console.log("Server is Listening !!!!!");
+
+    const data = await Song.find({
+        filmName: film,
+        singer: singer
+    });
+
+    res.json(data);
 });
 
+
+// j) Update actor & actress
+app.put("/update/:name", async (req, res) => {
+    await Song.updateOne(
+        { songName: req.params.name },
+        { actor: "Ranveer Singh", actress: "Shrileela" }
+    );
+    res.json({ message: "Updated Successfully" });
+});
+
+
+// k) HTML TABLE DISPLAY
+app.get("/table", async (req, res) => {
+    const songs = await Song.find();
+
+    let html = `
+    <html>
+    <head>
+        <title>Song Table</title>
+        <style>
+            table { border-collapse: collapse; width: 80%; margin: auto; }
+            th, td { border: 1px solid black; padding: 10px; text-align: center; }
+            th { background-color: #ddd; }
+        </style>
+    </head>
+    <body>
+        <h2 style="text-align:center;">Song Details</h2>
+        <table>
+            <tr>
+                <th>Song Name</th>
+                <th>Film Name</th>
+                <th>Music Director</th>
+                <th>Singer</th>
+                <th>Actor</th>
+                <th>Actress</th>
+            </tr>
+    `;
+
+    songs.forEach(s => {
+        html += `
+            <tr>
+                <td>${s.songName}</td>
+                <td>${s.filmName}</td>
+                <td>${s.musicDirector}</td>
+                <td>${s.singer}</td>
+                <td>${s.actor || "-"}</td>
+                <td>${s.actress || "-"}</td>
+            </tr>
+        `;
+    });
+
+    html += `
+        </table>
+    </body>
+    </html>
+    `;
+
+    res.send(html);
+});
+
+
+// Server
+app.listen(3000, () => {
+    console.log("Server running on port 3000");
+});
